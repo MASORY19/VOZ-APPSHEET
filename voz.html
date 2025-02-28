@@ -10,29 +10,30 @@
         function hablar(texto) {
             var msg = new SpeechSynthesisUtterance();
             msg.text = texto;
+            msg.lang = 'es-MX'; // Español de México (puedes cambiar a 'es-VE' para Venezuela)
             msg.rate = 1; // Velocidad normal
 
-            // Buscar una voz latinoamericana
-            var voices = speechSynthesis.getVoices();
-            var voiceFound = voices.find(voice => 
-                voice.lang.startsWith('es-') && 
-                (voice.name.includes('Mexico') || voice.name.includes('Venezuela') || voice.name.includes('US'))
-            );
+            // Esperar a que las voces estén cargadas antes de seleccionar una
+            speechSynthesis.onvoiceschanged = function() {
+                var voices = speechSynthesis.getVoices();
+                var vozFemenina = voices.find(voice => 
+                    (voice.lang === 'es-MX' || voice.lang === 'es-VE') && 
+                    (voice.name.toLowerCase().includes("female") || voice.name.toLowerCase().includes("mujer"))
+                );
+                msg.voice = vozFemenina || voices.find(voice => voice.lang.startsWith('es')); // Alternativa si no encuentra femenina
+                speechSynthesis.speak(msg);
+            };
 
-            // Si encuentra una voz latinoamericana, la usa, sino usa español genérico
-            msg.voice = voiceFound ? voiceFound : voices.find(voice => voice.lang.startsWith('es-'));
-
+            // Iniciar la reproducción del mensaje
             speechSynthesis.speak(msg);
         }
 
+        // Obtener el texto de la URL y reproducirlo automáticamente
         window.onload = function() {
             let urlParams = new URLSearchParams(window.location.search);
             let texto = urlParams.get("texto");
-
             if (texto) {
                 hablar(decodeURIComponent(texto));
-            } else {
-                document.body.innerHTML = "<h2>Error: No se recibió texto.</h2>";
             }
         };
     </script>
