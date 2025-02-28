@@ -18,8 +18,10 @@
         window.onload = function() {
             let urlParams = new URLSearchParams(window.location.search);
             let texto = urlParams.get("texto");
+
             if (texto) {
                 hablar(decodeURIComponent(texto));
+                document.body.innerHTML = `<h2>Reproduciendo: ${decodeURIComponent(texto)}</h2>`;
             } else {
                 document.body.innerHTML = "<h2>Error: No se recibió texto.</h2>";
             }
