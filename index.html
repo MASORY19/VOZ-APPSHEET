@@ -6,29 +6,35 @@
     <title>Texto a Voz</title>
 </head>
 <body>
-    <h2 id="mensaje">Haz clic en el botón para escuchar el mensaje</h2>
-    <button onclick="iniciarVoz()">Reproducir</button>
-
     <script>
         function hablar(texto) {
             var msg = new SpeechSynthesisUtterance();
             msg.text = texto;
-            msg.lang = 'es-ES';
             msg.rate = 1; // Velocidad normal
+
+            // Buscar una voz latinoamericana
+            var voices = speechSynthesis.getVoices();
+            var voiceFound = voices.find(voice => 
+                voice.lang.startsWith('es-') && 
+                (voice.name.includes('Mexico') || voice.name.includes('Venezuela') || voice.name.includes('US'))
+            );
+
+            // Si encuentra una voz latinoamericana, la usa, sino usa español genérico
+            msg.voice = voiceFound ? voiceFound : voices.find(voice => voice.lang.startsWith('es-'));
+
             speechSynthesis.speak(msg);
         }
 
-        function iniciarVoz() {
+        window.onload = function() {
             let urlParams = new URLSearchParams(window.location.search);
             let texto = urlParams.get("texto");
 
             if (texto) {
-                document.getElementById("mensaje").innerText = `Reproduciendo: ${decodeURIComponent(texto)}`;
                 hablar(decodeURIComponent(texto));
             } else {
-                document.getElementById("mensaje").innerText = "Error: No se recibió texto.";
+                document.body.innerHTML = "<h2>Error: No se recibió texto.</h2>";
             }
-        }
+        };
     </script>
 </body>
 </html>
