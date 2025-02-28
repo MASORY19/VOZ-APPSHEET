@@ -6,6 +6,9 @@
     <title>Texto a Voz</title>
 </head>
 <body>
+    <h2 id="mensaje">Haz clic en el botón para escuchar el mensaje</h2>
+    <button onclick="iniciarVoz()">Reproducir</button>
+
     <script>
         function hablar(texto) {
             var msg = new SpeechSynthesisUtterance();
@@ -15,17 +18,17 @@
             speechSynthesis.speak(msg);
         }
 
-        window.onload = function() {
+        function iniciarVoz() {
             let urlParams = new URLSearchParams(window.location.search);
             let texto = urlParams.get("texto");
 
             if (texto) {
+                document.getElementById("mensaje").innerText = `Reproduciendo: ${decodeURIComponent(texto)}`;
                 hablar(decodeURIComponent(texto));
-                document.body.innerHTML = `<h2>Reproduciendo: ${decodeURIComponent(texto)}</h2>`;
             } else {
-                document.body.innerHTML = "<h2>Error: No se recibió texto.</h2>";
+                document.getElementById("mensaje").innerText = "Error: No se recibió texto.";
             }
-        };
+        }
     </script>
 </body>
 </html>
