@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texto a Voz</title>
+</head>
+<body>
+    <script>
+        function hablar(texto) {
+            var msg = new SpeechSynthesisUtterance();
+            msg.text = texto;
+            msg.lang = 'es-ES';
+            msg.rate = 1; // Velocidad normal
+            speechSynthesis.speak(msg);
+        }
+
+        window.onload = function() {
+            let urlParams = new URLSearchParams(window.location.search);
+            let texto = urlParams.get("texto");
+            if (texto) {
+                hablar(decodeURIComponent(texto));
+            }
+        };
+    </script>
+</body>
+</html>
